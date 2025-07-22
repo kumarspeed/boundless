@@ -515,10 +515,15 @@ clone_repository() {
                 rm -rf "$INSTALL_DIR"
             else
                 cd "$INSTALL_DIR"
-                if ! git pull origin release-0.13 2>&1 >> "$LOG_FILE"; then
-                    error "Failed to update repository"
-                    exit $EXIT_DEPENDENCY_FAILED
-                fi
+                git fetch origin
+if ! git checkout release-0.13 2>&1 >> "$LOG_FILE"; then
+    error "Failed to checkout release-0.13"
+    exit $EXIT_DEPENDENCY_FAILED
+fi
+if ! git pull origin release-0.13 2>&1 >> "$LOG_FILE"; then
+    error "Failed to update release-0.13 branch"
+    exit $EXIT_DEPENDENCY_FAILED
+fi
                 return
             fi
         fi
@@ -529,7 +534,7 @@ clone_repository() {
             exit $EXIT_DEPENDENCY_FAILED
         fi
         cd "$INSTALL_DIR"
-        if ! git checkout release-0.13 2>&1; then
+        if ! git checkout release-0.13.0 2>&1; then
             error "Failed to checkout release-0.13"
             exit $EXIT_DEPENDENCY_FAILED
         fi
